@@ -15,8 +15,7 @@
 
                     <div class="card-body">
 
-
-                    @if (session('status'))
+                        @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}
                             </div>
@@ -24,7 +23,7 @@
 
 
                         <div class="row">
-                            @foreach($livros as $livro)
+
                                 <div class="col-md-4 col-sm-6">
                                     <div class="card">
                                         <img class="card-img-top img-fluid"
@@ -33,19 +32,18 @@
                                         <div class="card-body">
                                             <h4 class="card-title">{{ $livro->nome }}</h4>
                                             <p class="card-text">{{ $livro->descricao }}</p>
-                                            <a href="#" class="btn btn-primary">Emprestar</a>
+                                            <a href="#" class="btn btn-primary">Ação</a>
 
-                                            @if($livro->checkEmpestado())
-                                                <span class="badge badge-warning">Emprestado</span>
-                                            @else
-                                                <span class="badge badge-success">Disponível</span>
-                                            @endif
+
                                         </div>
+
+                                        @if($livro->checkEmpestado())
+                                            Livre
+                                            @else
+                                            Emprestado
+                                        @endif
                                     </div>
-
-
                                 </div>
-                            @endforeach
 
                         </div>
 

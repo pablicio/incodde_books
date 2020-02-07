@@ -27,6 +27,13 @@ class LivroController extends Controller
         return redirect()->to('/livros');
     }
 
+    public function show($id)
+    {
+        $livro = Livro::findOrFail($id);
+
+        return view('livros.show', compact('livro'));
+    }
+
     public function edit($id)
     {
         $livro = Livro::findOrFail($id);
