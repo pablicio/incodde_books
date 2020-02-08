@@ -20,9 +20,25 @@ class LivroController extends Controller
 
     public function store(Request $request)
     {
+        $this->validate(request(), [
+            'nome' => 'required',
+            'descricao' => 'required',
+            'imagem' => 'required'
+        ]);
+
+        $fileName = null;
+        if (request()->hasFile('imagem')) {
+            $file = request()->file('imagem');
+            $fileName = md5($file->getClientOriginalName() . time()) . "." . $file->getClientOriginalExtension();
+            $file->move('./uploads/images/', $fileName);
+        }
+
+        $request = $request->all();
+        $request['imagem'] = $fileName;
+
         $livro = new Livro();
 
-        $livro = $livro->create($request->all());
+        $livro = $livro->create($request);
 
         return redirect()->to('/livros');
     }
