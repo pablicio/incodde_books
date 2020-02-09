@@ -23,7 +23,7 @@ class LivroController extends Controller
         $this->validate(request(), [
             'nome' => 'required',
             'descricao' => 'required',
-            'imagem' => 'required'
+            'imagem' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         $fileName = null;
@@ -33,12 +33,15 @@ class LivroController extends Controller
             $file->move('./uploads/images/', $fileName);
         }
 
+
+
         $request = $request->all();
         $request['imagem'] = $fileName;
+        $request['user_id'] = auth()->user()->id;
 
         $livro = new Livro();
 
-        $livro = $livro->create($request);
+        $livro->create($request);
 
         return redirect()->to('/livros');
     }
@@ -48,6 +51,24 @@ class LivroController extends Controller
         $livro = Livro::findOrFail($id);
 
         return view('livros.show', compact('livro'));
+    }
+
+    public function meusEmprestimos()
+    {
+        $user = auth()->user();
+
+        $livros = $user->livros()->paginate(6);
+
+        return view('livros.meusEmprestimos', compact('livros'));
+    }
+
+    public function meusLivros()
+    {
+        $user = auth()->user();
+
+        $livros = $user->meusLivros()->paginate(6);
+
+        return view('livros.meusLivros', compact('livros'));
     }
 
     public function edit($id)
@@ -62,6 +83,29 @@ class LivroController extends Controller
         $livro = Livro::findOrFail($id);
 
         $livro->update($request->all());
+
+        return redirect()->to('livros');
+    }
+
+
+    public function novoEmprestimo(Request $request)
+    {
+        $user = auth()->user();
+
+        $user->livros()->attach([
+            'livro_id' => $request->livroId
+        ]);
+
+        return redirect()->to('livros');
+    }
+
+    public function devolverEmprestimo(Request $request)
+    {
+        $user = auth()->user();
+
+        $user->livros()->detach([
+            'livro_id' => $request->livroId
+        ]);
 
         return redirect()->to('livros');
     }

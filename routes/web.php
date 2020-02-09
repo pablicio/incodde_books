@@ -11,15 +11,22 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/home', 'HomeController@index')->name('home');
-
 Auth::routes();
 
-Route::get('/livros', 'LivroController@index');
-Route::post('/livros', 'LivroController@store')->name('livros.store');
-Route::get('/livros/create', 'LivroController@create');
+Route::group(['middleware' => ['web', 'auth']], function () {
+    Route::get('/', 'LivroController@index');
+    Route::get('/livros', 'LivroController@index');
+
+    Route::post('/livros', 'LivroController@store')->name('livros.store');
+    Route::get('/livros/create', 'LivroController@create');
+    Route::get('/livros/meusLivros', 'LivroController@meusLivros');
+    Route::get('/livros/meusEmprestimos', 'LivroController@meusEmprestimos');
+
+    Route::get('/livros/novoEmprestimo', 'LivroController@novoEmprestimo');
+    Route::get('/livros/devolverEmprestimo', 'LivroController@devolverEmprestimo');
+
+});
+
+
+
 

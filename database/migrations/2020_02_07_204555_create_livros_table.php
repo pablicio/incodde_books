@@ -15,11 +15,15 @@ class CreateLivrosTable extends Migration
     {
         Schema::create('livros', function (Blueprint $table) {
             $table->bigIncrements('id');
+
             $table->string('nome');
             $table->string('descricao');
             $table->string('imagem');
+            $table->string('user_id');
 
             $table->timestamps();
+
+            $table->index('user_id');
         });
     }
 
